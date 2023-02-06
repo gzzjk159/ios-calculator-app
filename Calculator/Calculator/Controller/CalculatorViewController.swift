@@ -70,18 +70,9 @@ final class CalculatorViewController: UIViewController {
                                       operand: formatNumber)
         
         var formula = ExpressionParser.parse(from: expression.joined(separator: Symbol.blank))
+        guard let result = formula.result() else { return }
         
-        let result = formula.result()
-        
-        if result.isNaN {
-            calculateOperand = Symbol.nan
-        } else {
-            calculateOperand = NumberFormatter.convertToString(fromDouble: result)
-        }
-        
-        isCalculated = true
-        resetOperator()
-        expression.removeAll()
+        calculateOperand = NumberFormatter.convertToString(fromDouble: result)
     }
     
     @IBAction private func didTapOperatorButton(_ sender: UIButton) {
@@ -95,7 +86,7 @@ final class CalculatorViewController: UIViewController {
         
         guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
         let calculatedOperand = NumberFormatter.convertToString(fromString: calculatedNumber)
-            
+        
         addExpressionAndCalculateItem(sign: calculateOperator,
                                       number: calculatedNumber,
                                       operand: calculatedOperand)
@@ -133,9 +124,7 @@ final class CalculatorViewController: UIViewController {
     
     @IBAction private func didTapDotButton(_ sender: UIButton) {
         guard let dot = sender.currentTitle else { return }
-        guard !calculateOperand.contains(Symbol.dot) else { return }
-        
-        guard !isCalculated else { return }
+        guard !calculateOperand.contains(dot) else { return }
         calculateOperand += dot
     }
     
