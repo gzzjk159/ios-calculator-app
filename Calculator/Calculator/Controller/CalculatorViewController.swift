@@ -57,10 +57,7 @@ final class CalculatorViewController: UIViewController {
         guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
         guard let number = Double(calculatedNumber) else { return }
         
-        let formatNumber = NumberFormatter.convertToString(fromDouble: number)
-        
-        addExpressionAndCalculateItem(number: "\(number)")
- 
+        addExpressionAndCalculateItem(initialNumber: "\(number)")
         calculateOperand = calculate()
         isCalculated = true
         resetOperator()
@@ -78,11 +75,9 @@ final class CalculatorViewController: UIViewController {
             }
             return
         }
-        
         guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
-        let calculatedOperand = NumberFormatter.convertToString(fromString: calculatedNumber)
-            
-        addExpressionAndCalculateItem(number: calculatedNumber)
+
+        addExpressionAndCalculateItem(initialNumber: calculatedNumber)
         scrollToBottom()
         calculateOperator = operatorSign
         resetOperand()
@@ -118,12 +113,12 @@ final class CalculatorViewController: UIViewController {
         calculateOperand += dot
     }
     
-    private func addExpressionAndCalculateItem(number: String) {
-        appendExpression(number: number)
+    private func addExpressionAndCalculateItem(initialNumber: String) {
+        appendExpression(initialNumber)
         addStackView()
     }
     
-    private func appendExpression(number: String) {
+    private func appendExpression(_ number: String) {
         expression.append(calculateOperator)
         expression.append(number)
     }
@@ -147,11 +142,14 @@ final class CalculatorViewController: UIViewController {
     
     private func generateUILabel() -> UILabel {
         let label = UILabel()
-        label.text = calculateOperator + Symbol.blank + NumberFormatter.convertToString(fromString: calculateOperand)
+        if calculateOperator.isEmpty {
+            label.text = NumberFormatter.convertToString(fromString: calculateOperand)
+        } else {
+            label.text = calculateOperator + Symbol.blank + NumberFormatter.convertToString(fromString: calculateOperand)
+        }
         label.textColor = .white
         label.font = UIFont.preferredFont(forTextStyle: .title3)
         label.adjustsFontForContentSizeCategory = true
-        
         return label
     }
     
@@ -173,4 +171,3 @@ final class CalculatorViewController: UIViewController {
         calculateOperator = Symbol.empty
     }
 }
-
