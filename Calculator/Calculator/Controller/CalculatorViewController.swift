@@ -40,10 +40,8 @@ final class CalculatorViewController: UIViewController {
     }
     
     @IBAction private func didTapChangeSignButton() {
-        guard calculateOperand != Symbol.zero,
-              calculateOperand != Symbol.nan else { return }
-        
-        guard let calculateNumberFirst = calculateOperand.first else { return }
+        guard calculateOperand != Symbol.zero, calculateOperand != Symbol.nan,
+              let calculateNumberFirst = calculateOperand.first else { return }
         
         if calculateNumberFirst == Character(Symbol.minus) {
             calculateOperand.removeFirst()
@@ -53,9 +51,9 @@ final class CalculatorViewController: UIViewController {
     }
     
     @IBAction private func didTapResultButton() {
-        guard !isCalculated, calculateOperator != Symbol.empty else { return }
-        guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
-        guard let number = Double(calculatedNumber) else { return }
+        guard !isCalculated, calculateOperator != Symbol.empty,
+              let calculatedNumber = operandLabel.text?.withoutComma,
+              let number = Double(calculatedNumber) else { return }
         
         addExpressionAndCalculateItem(initialNumber: "\(number)")
         calculateOperand = calculate()
@@ -67,15 +65,15 @@ final class CalculatorViewController: UIViewController {
     
     @IBAction private func didTapOperatorButton(_ sender: UIButton) {
         isCalculated = false
-        guard let operatorSign = sender.currentTitle,
-              !calculateOperand.hasSuffix(Symbol.dot) else { return }
+        guard !calculateOperand.hasSuffix(Symbol.dot),
+              let operatorSign = sender.currentTitle,
+              let calculatedNumber = operandLabel.text?.withoutComma else { return }
         guard calculateOperand != Symbol.zero else {
             if  calculateOperator != Symbol.empty {
                 calculateOperator = operatorSign
             }
             return
         }
-        guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
 
         addExpressionAndCalculateItem(initialNumber: calculatedNumber)
         scrollToBottom()
@@ -84,8 +82,8 @@ final class CalculatorViewController: UIViewController {
     }
     
     @IBAction private func didTapNumberButton(_ sender: UIButton) {
-        guard calculateOperand.count <= Symbol.maxSignificantDigits else { return }
-        guard let number = sender.currentTitle else { return }
+        guard calculateOperand.count <= Symbol.maxSignificantDigits,
+              let number = sender.currentTitle else { return }
         
         if isCalculated {
             guard number != Symbol.zero, number != Symbol.doubleZero else { return }
@@ -107,8 +105,7 @@ final class CalculatorViewController: UIViewController {
     }
     
     @IBAction private func didTapDotButton(_ sender: UIButton) {
-        guard let dot = sender.currentTitle else { return }
-        guard !calculateOperand.contains(dot) else { return }
+        guard let dot = sender.currentTitle, !calculateOperand.contains(dot) else { return }
         
         calculateOperand += dot
     }

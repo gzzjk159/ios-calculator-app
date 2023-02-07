@@ -87,6 +87,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		989BD508299237F400F4E1B7 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				716AFFD42990CF4D00AFDF25 /* CalculatorError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
 		98B18833297FCE38008D8AC2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,7 +105,6 @@
 				98B1DF472983A803001C9AEF /* ExpressionParser.swift */,
 				98B1DF492983A94B001C9AEF /* Formula.swift */,
 				98DE0BA0298F93B600082EC2 /* Symbol.swift */,
-				716AFFD42990CF4D00AFDF25 /* CalculatorError.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -174,6 +181,7 @@
 				98DE0B9B298F848600082EC2 /* Controller */,
 				98DE0B9C298F84DB00082EC2 /* Protocol */,
 				98DE0B9D298F851E00082EC2 /* Extension */,
+				989BD508299237F400F4E1B7 /* Error */,
 				C713D9472570E5EB001C3AFC /* Main.storyboard */,
 				C713D94A2570E5ED001C3AFC /* Assets.xcassets */,
 				C713D94C2570E5ED001C3AFC /* LaunchScreen.storyboard */,
