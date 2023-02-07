@@ -59,9 +59,7 @@ final class CalculatorViewController: UIViewController {
         
         let formatNumber = NumberFormatter.convertToString(fromDouble: number)
         
-        addExpressionAndCalculateItem(sign: calculateOperator,
-                                      number: "\(number)",
-                                      operand: formatNumber)
+        addExpressionAndCalculateItem(number: "\(number)")
  
         calculateOperand = calculate()
         isCalculated = true
@@ -71,7 +69,7 @@ final class CalculatorViewController: UIViewController {
     }
     
     @IBAction private func didTapOperatorButton(_ sender: UIButton) {
-        restartCalculate()
+        isCalculated = false
         guard let operatorSign = sender.currentTitle,
               !calculateOperand.hasSuffix(Symbol.dot) else { return }
         guard calculateOperand != Symbol.zero else {
@@ -84,9 +82,7 @@ final class CalculatorViewController: UIViewController {
         guard let calculatedNumber = operandLabel.text?.withoutComma else { return }
         let calculatedOperand = NumberFormatter.convertToString(fromString: calculatedNumber)
             
-        addExpressionAndCalculateItem(sign: calculateOperator,
-                                      number: calculatedNumber,
-                                      operand: calculatedOperand)
+        addExpressionAndCalculateItem(number: calculatedNumber)
         scrollToBottom()
         calculateOperator = operatorSign
         resetOperand()
@@ -95,8 +91,14 @@ final class CalculatorViewController: UIViewController {
     @IBAction private func didTapNumberButton(_ sender: UIButton) {
         guard calculateOperand.count <= Symbol.maxSignificantDigits else { return }
         guard let number = sender.currentTitle else { return }
-        restartCalculate()
         
+        if isCalculated {
+            guard number != Symbol.zero, number != Symbol.doubleZero else { return }
+            calculateOperand = number
+            resetCalculatorItemView()
+            isCalculated = false
+            return
+        }
         if calculateOperand == Symbol.zero {
             guard number != Symbol.zero, number != Symbol.doubleZero else { return }
             calculateOperand = number
@@ -116,20 +118,14 @@ final class CalculatorViewController: UIViewController {
         calculateOperand += dot
     }
     
-    private func addExpressionAndCalculateItem(sign: String, number: String, operand: String) {
-        appendExpression(sign: sign, number: number)
+    private func addExpressionAndCalculateItem(number: String) {
+        appendExpression(number: number)
         addStackView()
     }
     
-    private func appendExpression(sign: String, number: String) {
-        expression.append(sign)
+    private func appendExpression(number: String) {
+        expression.append(calculateOperator)
         expression.append(number)
-    }
-    
-    private func restartCalculate() {
-        if isCalculated {
-            isCalculated = false
-        }
     }
     
     private func calculate() -> String {
