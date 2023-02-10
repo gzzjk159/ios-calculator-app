@@ -95,7 +95,7 @@
 
 |0으로 나누기를 시도할때 NaN으로 표기|ScrollView|
 |:---:|:---:|
-|<img src="https://i.imgur.com/0kveh1b.gif" style="width: 300;"/>|<img src = "https://i.imgur.com/lUj7m4d.gif" style="width: 300;"/>|
+|<img src="https://i.imgur.com/0kveh1b.gif" width= "230" height="430">|<img src="https://i.imgur.com/lUj7m4d.gif" width="230" height="430">|
 
 
 
