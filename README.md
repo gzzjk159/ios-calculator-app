@@ -1,364 +1,260 @@
-# 🧮 Calculator
+# iOS 커리어 스타터 캠프
+# 계산기
+> 숫자와 기호를 이용하여 사칙연산을 하는 계산기 앱 만들기
+> 
+> 프로젝트 기간: 2023.02.06-2023.02.10
+> 
+> 팀원: 👩🏻‍💻[리지](https://github.com/yijiye?tab=repositories) 🧑🏻‍💻[vetto](https://github.com/gzzjk159) 🧑🏻‍💻[Andrew](https://github.com/Andrew-0411) | 리뷰어: 👩🏻‍💻[Judy](https://github.com/Judy-999)
+>
 
-## 📚 목차
-* [🧮 소개](#-소개)
-* [📁 프로젝트 구조](#-프로젝트-구조)
-* [🖥 실행화면](#-실행화면)
-* [⏱ 타임라인](#-타임라인)
-* [🔥 트러블 슈팅](#-트러블-슈팅)
-* [🔍 참고 링크](#-참고-링크)
 
-## 🧃 소개
-### 프로젝트 기간: 23.01.24 ~ 23.02.03
-* 간단한 계산기 프로그램입니다.
-* 단, 사칙연산 우선순위를 무시합니다.
+## 목차
+1. [타임라인](#타임라인)
+2. [프로젝트 구조](#프로젝트-구조)
+3. [실행화면](#실행화면) 
+4. [트러블 슈팅](#트러블-슈팅) 
+5. [회고👀](#회고)
+6. [참고 링크](#참고-링크)
 
-### 프로젝트 팀원
-|⭐️Vetto|
-| :--------: |
-|<img src="https://cdn.discordapp.com/attachments/535779947118329866/1055718870951940146/1671110054020-0.jpg" width="150" height="180">|
 
-<details>
-    <summary><big>📄 규칙</big></big></summary>
+# 타임라인 
+- 2023.02.06 : Model 파일별로 코드 병합, ViewController 메서드별로 코드 병합
+- 2023.02.07 : 새로운 브랜치에 PR, Merge 방법으로 코드 병합
+- 2023.02.08 : 오류 수정, 코드 리팩토링
+- 2023.02.09 : ViewController에서 View분리 및 개행, 주석, 네이밍 리팩토링
+- 2023.02.10 : 개행정리, 네이밍 수정, 파일정리 
+<br>
 
-#### Commit 컨벤션
-* feat : 기능 구현, 수정
-* docs : 문서 추가, 수정
-* refactor : Naming 수정 등
-* fix : 사용자가 사용하는 부분에서 bug 수정
-* chore : 별로 중요하지 않은 사항
 
-</details>
-
-## 📁 프로젝트 구조
+# 프로젝트 구조
 
 <details>
     <summary><big>UML</big></big></summary>
 
-![Calculator_step3 drawio](https://user-images.githubusercontent.com/72865221/216542801-aa1a69d0-8812-4120-8d31-ac5eb21eb131.png)
-리팩토링 후 수정 예정
+![calculator2 drawio](https://user-images.githubusercontent.com/72865221/218009246-7d9579f0-9bb5-4cef-926e-398e36bc1ae8.png)
 
 </details>
 
-## 🖥 실행화면
+<br>
+<details>
+    <summary><big>코드병합 정리</big></big></summary>
+**Model**
+> 파일별로 병합
+- CalculatorItemQueue (vetto)
+    - LinkedList 구현 : 팀원이 사용해보지 않은 데이터 구조 선택
+- Operator.divide (리지)
+    - 오류 처리 구문: 리지가 구현한 NaN 오류처리 선택
+- ExpressionParser (Andrew & vetto)
+    - `parse` (Andrew)
+    - `componentsByOperators` 고차함수 flatMap 이용 (vetto)
+- Formula (Andrew & 리지)
+    - 프로퍼티, 메서드 (Andrew), do-catch 구문 (리지)
+- Extension String (Andrew)
+    - 고차함수 활용
 
-###  ACButton, CEButton 실행 결과
+**ViewController**
+> 버튼의 기능에 따라 병합
 
-| ACButton | CEButton |
-| :--------: | :--------: |
-| <img src="https://user-images.githubusercontent.com/72865221/216528148-86a6494d-2706-48a8-8054-f2b346fab88d.gif" width="300" height="600"> | <img src="https://user-images.githubusercontent.com/72865221/216528552-337b67dc-0d26-441a-8e6a-0be4e1d0299b.gif" width="300" height="600"> |
+- AC버튼 (리지) 
+    - 메서드로 분리하여 여러곳에서 재활용
+- CE버튼 (vetto, 리지) 
+    - 둘의 코드가 일치
+- +/- 버튼 (vetto)
+    - 기능적으로는 유사했으나 사용한 명령어에 따라 직관적인 vetto의 코드를 선택 (vetto: `first`, `removeFirst()`, 리지: `firstIndex(of:)`, `remove(at:)` 사용)
+- 결과버튼 (vetto, 리지)
+    - 계산하는 과정을 따로 메서드로 분리 (리지)
+    - 조건과 NumberFormatter 적용 (vetto)
+- 숫자입력버튼 (vetto, 리지)
+    - 계산 부울 변수를 초기화 하는 메서드 (리지)
+    - 조건과 조건과 NumberFormatter 적용 (vetto)
+- 연산자입력버튼 (vetto, 리지)
+    - 전반적인 코드 (vetto)
+    - `hasSuffix` 로 `.` 으로끝나는 숫자 조건 적용 (리지)
+- NumberFormatter적용 (vetto)
+    - extension 으로 구현하여 전역에서 활용 (콤마, 불필요한 소수점 제거, 20자리)
+- 스택뷰 (리지)
+    - UILabel을 stackView의 쌓는 형식
+- 스크롤뷰 (vetto)
+    - 자동으로 스크롤뷰가 올라오도록 구현할때, `layoutIfNeeded()`사용
 
-### ChangeSignButton, NaN 실행 결과
+**View(Storyboard)**
+- 스택뷰를 리지로 선택하면서 스토리보드상 불필요한 스택뷰 제거
 
-| ChangeSignButton | NaN |
-| :--------: | :--------: |
-| <img src="https://user-images.githubusercontent.com/72865221/216529213-464f1b05-7705-4f50-bce3-bde280d8f0b2.gif" width="300" height="600"> | <img src="https://user-images.githubusercontent.com/72865221/216529216-8d56b1e8-555c-46ae-b054-51009eb30705.gif" width="300" height="600"> |
 
-### result 실행 결과
+</details>
 
-| scroll | result |
-| :--------: | :--------: |
-| <img src="https://user-images.githubusercontent.com/72865221/216529220-b0e5bfb2-8715-47c3-b377-098e2276949c.gif" width="300" height="600"> | <img src="https://user-images.githubusercontent.com/72865221/216529218-5e5f8092-ffe4-4aae-9aad-b28b9d4ff9cd.gif" width="300" height="600"> |
-
-## 📌 프로젝트 수행 중 핵심 경험
    
-* TDD
-* UML을 기반 코드 구현
-* Queue 자료구조의 이해와 구현
-* 숫자와 연산자 입력에 Queue 활용
-* StackView, ScrollView의 이해
-* IBAction, IBOutlet의 이해
+# 실행화면
+|AC: 모든 연산을 초기화|CE: 현재 입력한 숫자만 삭제|⁺⁄₋: 숫자 부호 변환하여 연산 |
+|:---:|:---:|:---:|
+|<img src="https://i.imgur.com/CwB6FmZ.gif" style="zoom:33%;"/>|<img src = "https://i.imgur.com/0IAciea.gif" style="zoom:33%;"/>|<img src="https://i.imgur.com/zlbXqU4.gif" style="zoom:33%;"/>|
 
-## ⏱ 타임라인
+|숫자입력이 없는 상태인 0에서 연산자를 누르면 연산이 이루어지지 않고 연산자만 변경|숫자 3자리마다 콤마(,)를 표기해서 숫자를 나누고 소수점 뒤에 불필요한 숫자 0은 생략한다|= 버튼을 누르면 연산을 한 번에 수행한다. 연산자 우선순위는 무시되고 순차적으로 연산한다.|
+|:---:|:---:|:---:|
+|<img src="https://i.imgur.com/7sxRncr.gif" style="width: 300;"/>|<img src = "https://i.imgur.com/IK5eUqs.gif" style="width: 300;"/>|<img src="https://i.imgur.com/WGRjgYt.gif" style="width: 300;"/>|
 
-<details>
-    <summary>STEP 1 [2023.01.24] ~ [2023.01.27]</summary></summary> 
-
-- 2023.01.24
-    - node 구현, node를 이용한 queue구현
-    - isEmpty, size, peek 연산 프로퍼티 구현
-    - enqueue, dequeue, clear 메서드 구현
-    
-- 2023.01.25
-    - node test코드 추가
-    - calculator test코드 추가
-    - calculator method test실행
-
-- 2023.01.26
-    - 불필요한 size, peek 연산 프로퍼티 삭제
-    - 불필요한 node test 삭제
-    - 함수명, 접근제어자 관하여 리팩토링
-    
-</details>
-
-<details>
-    <summary>STEP 2 [2023.01.28] ~ [2023.01.31]</summary></summary> 
-    
-- 2023.01.28
-    - operator 구현, ExpressionParse 구현, split 구현
-    - operator , ExpressionParse, split test 구현
-
-- 2023.01.29
-    - parse메서드 리팩토링, parse test 구현
-    - result메서드 구현 및 리팩토링
-
-- 2023.01.30
-    - 접근 제어자 수정
-    - Formula init 추가
-
-- 2023.01.31
-    - split 테스트 추가
-    - componentsByOperator 메서드 리팩토링
-
-    
-</details>
-
-<details>
-    <summary>STEP 3 [2023.01.24] ~ [2023.01.27]</summary></summary> 
-
-- 2023.02.01
-    - 숫자 버튼 구현
-    - 연산자 버튼 구현
-
-- 2023.02.02
-    - AC 버튼 구현, CE 버튼 구현
-    - NaN 결과 수정
-
-- 2023.02.03
-    - NumberFormatter 생성
-    - Dot버튼 구현 및 리팩토링
-    - 계산기 오류 수정
-    
-</details>
-
-## 🔥 트러블 슈팅
-
-<details open>
-    <summary><strong><big>📍 STEP 1</big></big></strong></summary>
+|0으로 나누기를 시도할때 NaN으로 표기|ScrollView|
+|:---:|:---:|
+|<img src="https://i.imgur.com/0kveh1b.gif" style="width: 300;"/>|<img src = "https://i.imgur.com/lUj7m4d.gif" style="width: 300;"/>|
 
 
-### 1️⃣ CalculatorItemQueue 타입에 대한 고민
 
-#### 문제점
-* CalculatorItemQueue의 타입을 struct와 class 두 개의 타입 중에서 고민을 하였습니다.  두 개의 타입에는 차이점이 많았지만 아직 프로젝트를 많이 해보지 않아서 어떤 방식을 선택해야 할지 선뜻 생각이 안났습니다.
+# 트러블 슈팅 
 
-#### 해결법
-* struct로 구현을 할때에는 많은 이유가 있지만 그 중에서 `다른 타입으로부터 상속받거나, 자신을 상속할 필요가 없을때`, `캡슐화한 값을 참조하는 것보다 복사하는 것이 합당할때`라는 타당한 이유가 있었기 때문에 struct를 선택하여 구현하였습니다.
-    
-```swift
-struct CalculatorItemQueue<Element: CalculateItem> {}
-```
+## 1️⃣ 배열 vs 연결리스트
+### 문제점
+* 3명의 코드를 합치는데 있어서 queue를 구성하는 방법이 달랐습니다. 한명은 노드를 이용한 LinkedList로 queue를 구성하였고 다른 두명은 기존 Array를 이용한 doubleStack으로 queue를 구현하였습니다. 따라서 어떤 방식을 채택해서 병합할지에 대해 고민을 하였습니다.
 
-### 2️⃣ UnitTest 하기위해 접근제어자 설정
-#### 문제점
-* UnitTest를 통해 각 메서드가 잘 실행이 되는지 테스트를 하려고 했습니다. 하지만 하나의 메서드를 테스트할 때 다른 메서드를 사용하게 되면 의존성이 높아진다고 하여 다른 메서드를 사용하지 않고 테스트를 진행하기 위해 내부의 데이터들을 internal로 선언하여 접근을 허용했습니다. 
+### 해결법
+* 팀원과 상의한 결과 자신이 사용해보지 않은 방법으로 사용해보고 싶다고 하여 Node를 이용한 LinkedList를 사용한 queue 구성 방식을 채택하여 병합하기로 하였습니다.
 
 ```swift
-var head: Node<Element>?
-var tail: Node<Element>?
-```
+//
+final class Node<Element: CalculateItem> {
+    let data: Element?
+    var next: Node<Element>?
     
-#### 해결법
-* 리뷰어의 조언대로 데이터의 직접 접근은 허용하지 않는 것이 좋다고 생각하여 private(set)을 붙여 외부에서는 읽기 전용인 접근제어자를 붙여 접근을 제어하였습니다.
-    
-```swift
-private(set) var head: Node<Element>?
-private(set) var tail: Node<Element>?
-```
-    
-### 3️⃣ Node 연결 해제에 관한 고민
-#### 문제점
-* 계산기에는 한번에 초기화하는 버튼이 있기 때문에 이것을 clear메소드로 구현하고 test를 하고 싶었습니다. 하지만 Node를 이용한 방식으로 queue를 구현하였기 때문에 노드가 연결이 해제되어 빈 queue가 되는지 명확하게 알 방법이 없다고 생각했습니다. 
-
-#### 해결법
-* node들은 클래스로 구현을 하였기 때문에 참조에 의해서 연결되어있습니다. 따라서 어디서 어떻게 연결되어있는지 그림을 그리다 보면 참조를 알 수 있습니다. class는 ARC에 의해서 자동으로 관리 되고 있기 때문에 참조만 끊어주면 모든 노드가 할당이 해제되며 빈 queue가 된다고 생각했습니다. 이것을 리뷰어에게 질문 하였고 리뷰어는 제 생각이 맞다고 해주었습니다. 따라서 head와 tail에 nil값을 넣어주면 할당이 해제되는 것을 알 수 있고 이 것을 코드로 구현했습니다.
-
-```swift
-mutating func clear() {
-    self.head = nil
-    self.tail = nil
+    init(data: Element?, next: Node<Element>? = nil) {}
 }
-```
-</details>
 
-<details open>
-    <summary><strong><big>📍 STEP 2</big></big></strong></summary>
+struct LinkedList<Element: CalculateItem> {
+    private(set) var head: Node<Element>?
+    private(set) var tail: Node<Element>?
     
-### 1️⃣ componentsByOperators 함수의 기능
-#### 문제점
-* 처음에는 빈칸을 기준으로 나눈 뒤 숫자와 기호들을 분리하여 숫자만 따로 배열에 넣어서 반환해주는 코드를 작성했습니다. 하지만 리뷰어의 조언대로 함수명과 기능이 일치하지 않는다는 것이 문제였습니다.
-
-```swift
-private static func componentsByOperators(from input: String) -> [String] {
-    return input.split(with: " ").compactMap { String(Double($0) ?? 0)}
+    var isEmpty: Bool {}
+    
+    mutating func append(_ data: Element) {}
+    
+    mutating func removeFirst() -> Element? {}
 }
 ```
 
-#### 해결법
-* 나중에 알아보니 키보드로 치는 `-`와 계산기에 있는 `-`는 다른 것을 알게되었습니다. 따라서 기호들로 나눠준 다음 그것을 배열로 반환하는 함수로 수정하였습니다.
+</br>
 
+## 2️⃣ 전역 변수 사용
+- 프로젝트에서 전역변수 expression을 사용해서 연산자와 피연산자를 받고 있습니다. 여러 함수에서 사용하기 때문에 전역으로 사용해도 괜찮은 방법인지 아니면 전역 변수를 지양하는 쪽으로 코드를 짜야하는지 고민했습니다.
+
+### 해결법
+- 코드를 합칠 때, 리지는 지역변수를 사용하여 stackView의 subView를 `forEach`로 돌면서 그 값들을 받아 계산을 하였고, vetto는 전역변수를 사용 연산자 버튼이랑 결과 버튼을 눌렀을 때 연산자와 숫자의 Label이 stackView의 들어갈 수 있게 하였습니다. 두가지를 비교했을 때, forEach로 모든 stackView를 도는 것이 메모리를 낭비한다고 판단하여 최소한의 전역변수를 사용한 vetto의 방법을 선택하였습니다.
+
+<br/>
+
+## 3️⃣ 실행 중 오류 해결
+### 1. 숫자 뒤에 소수점이 붙은 숫자
+### 문제점 
+- 숫자 뒤에 소수점을 붙이고 아무 소수점숫자를 적지 않는 상태(ex: 15.)에서 사칙연산을 할 경우 스크롤뷰 연산에 올라가야하는지 고민이였습니다.
+
+### 해결법
+- `15.`를 입력하고 연산자를 입력했을 때 `.`은 사라지고 `15`만 스택뷰에 올라가도록 수정하였습니다.
+
+### 2. 숫자 20자리까지 표현
+- Double 타입으로 반환되는 조건에서 20자리까지 표현하는 것이 한계가 있었습니다. 저희는 숫자의 count로 접근하여 20과 같거나 작은 조건을 추가하여 자릿수를 맞추었습니다.
+
+### 3. 불필요한 String 사용 줄이기
+### 문제점
+- label의 text를 설정해줘야 할 때 연산자가 `""`이 되면 기존 코드에서는 blank(`" "`)를 붙여주는 불필요한 과정이 있었습니다. 
+
+**기존코드**
 ```swift
-private static func componentsByOperators(from input: String) -> [String] {
-    var result: [String] = [input]
-    
-    Operator.allCases.forEach { `operator` in
-        result = result.flatMap{ $0.split(with: `operator`.rawValue) }
+label.text = calculateOperator + Symbol.blank + NumberFormatter.convertToString(fromString: calculateOperand)
+```
+
+### 해결법
+- 아래와 같이 기존의 코드를 if문으로 label의 text를 연산자를 기준으로 비어있을 때와 있을때를 구분하여 text를 지정해주어 메모리의 사용을 줄여주었습니다.
+
+**변경코드**
+```swift
+private func addStackView() {
+    let text: String
+    if calculateOperator.isEmpty {
+        text = NumberFormatter.convertToString(fromString: calculateOperand)
+    } else {
+        text = calculateOperator + Symbol.blank +
+          NumberFormatter.convertToString(fromString: calculateOperand)
     }
-        
-    return result
+        calculateStackView.addArrangedSubview(ViewManager.generateUILabel(text))
 }
 ```
 
-### 2️⃣ parse method test코드 작성
-#### 문제점
-* parse메서드를 테스트하기 위해서는 parse를 통해 나온 formula와 예상한 결과가 있는 formula를 비교하는 테스트가 필요했습니다. 하지만 formula는 == 연산자를 적용할 수 없기 때문에 어떻게 비교를 해야 하는지 고민했습니다. 
+- 조건문 없이 `text.lengthOfByte`를 확인했을 때
+<img src="https://i.imgur.com/TKPNOoC.png" width="500">
 
-#### 해결법
-* 먼저 extension formula의 equatable을 채택하게 해주어 비교할 수 있게 작성한 후 parse로 반환된 formula와 예상한 formula를 비교하는 방식을 선택하여 정확한 테스트를 할 수 있게 만들어 주었습니다.
+</br>
+
+- 조건문을 추가하여 불필요한 String을 제거한 후 `text.lengthOfByte`를 확인했을 때
+<img src="https://i.imgur.com/XxBYq1L.png" width="500">
+
+</br>
+
+## 4️⃣ View와 ViewController 분리
+### 문제점
+- `ViewController` 안에 `UILabel`을 만들어 `StackView`에 쌓이도록 처음에 구현을 했는데, `ViewController`의 코드 길이가 너무 길고 기능을 분리하는게 좋을 것 같다고 생각하였습니다. 그런데 현재 코드에서 View는 스토리보드로 구현을 하였기 때문에 분리하는 것이 큰 의미는 없다고 생각했으나 시험삼아 ViewController에 없어도 되는 Label, stackView, scrollView 일부를 분리시켜 보았습니다.
+
+### 해결법
+- `ViewManager` 라는 파일을 따로 만들어 enum으로 구현하고 static을 사용하였습니다. 그 이유는 인스턴스를 만드는 과정이 필요없고, static으로 구현하면서 전역에서 공용으로 접근할 수 있기 때문입니다.
+
+## 5️⃣ ViewManager 파일 위치
+### 문제점
+- ViewManager는 ViewController의 기능을 일부 분리하여 생성한 파일이므로 ViewController에 넣어두었습니다. 그러나 ViewController이려면 담당하는 View가 있어야 한다는 생각에 기존의 파일 위치를 변경해야 했습니다.
+
+### 해결법
+- ViewManager의 역할은 View를 구성한다기 보다 View를 생성해주는 기능을 하는 것이므로 MVC 셋 중에 하나로 구분하기 보다 기능을 담당해주는 Utility로 구분하였습니다.
+
+## 6️⃣ swift style convention
+### 문제점
+- swift에서는 기존의 코드가 한줄에 100자를 넘지 않는 것을 선호하고 100자가 넘는 코드에 대한 개행을 어떻게 나누면 좋을지 고민하였습니다.
+
+### 해결법
+- 컨벤션은 결국 협업자간의 규칙이므로 3명의 의견이 동의하는 방법을 선택하는 것이 가장 적절하다고 생각하였습니다. 팀원들과 상의하여 아래와 같이 개행정리를 하였습니다.
 
 ```swift
-mport XCTest
-@testable import Calculator
-
-extension Formula: Equatable {
-    public static func == (lhs: Calculator.Formula, rhs: Calculator.Formula) -> Bool {
-        var operatorsHead = lhs.operators.calculatorQueue.head
-        
-        while operatorsHead != nil {
-            let lhsData = lhs.operands.calculatorQueue.head?.data
-            let rhsData = rhs.operands.calculatorQueue.head?.data
-            
-            if lhsData != rhsData {
-                return false
-            }
-            
-            operatorsHead = operatorsHead?.next
-        }
-        
-        var operandsHead = lhs.operands.calculatorQueue.head
-        
-        while operandsHead != nil {
-            let lhsData = lhs.operands.calculatorQueue.head?.data
-            let rhsData = rhs.operands.calculatorQueue.head?.data
-            
-            if lhsData != rhsData {
-                return false
-            }
-            
-            operandsHead = operandsHead?.next
-        }
-        
-        return true
-    }
-}
-
-final class ExpressionParserTests: XCTestCase {
-    
-    // MARK: - parse method test
-    func test_parse호출후_임시로_로만든() {
-        // given
-        let input: String = "123 + -3 - 34 + 123 * 2"
-        var formula = Formula(operands: CalculatorItemQueue<Double>(),
-                              operators: CalculatorItemQueue<Operator>())
-        
-        formula.operands.enqueue(123)
-        formula.operands.enqueue(-3)
-        formula.operands.enqueue(34)
-        formula.operands.enqueue(123)
-        formula.operands.enqueue(2)
-        
-        formula.operators.enqueue(Operator.add)
-        formula.operators.enqueue(Operator.subtract)
-        formula.operators.enqueue(Operator.add)
-        formula.operators.enqueue(Operator.multiply)
-        
-        // when
-        let result = ExpressionParser.parse(from: input)
-        let expectation = formula
-        
-        // then
-        XCTAssertEqual(result, expectation)
-    }
+else {
+    calculateOperand = NumberFormatter
+        .convertToString(fromString: calculateOperand + number
+    )
 }
 ```
-    
-</details>
-
-<details open>
-    <summary><strong><big>📍 STEP 3</big></big></strong></summary>
-    
-### 1️⃣ subView 업데이트
-#### 문제점
-* addArrangedSubview로 view를 추가한다 해도 view가 바로바로 업데이트 되지 않는다는 것을 알았습니다.
-
-#### 해결법
-* 이것을 해결하기 위해서는 ios drawcycle에 대해서 알아야했습니다. 일단 layoutIfNeeded메서드를 활용하여 업데이트가 바로바로 될 수 있게 해주었습니다. 자세한 내용은 더 공부해야 할 거 같습니다.
-
-수정 전
 ```swift
-private func scrollToBottom() {
-    let bottomOffset = CGPoint(x: 0,
-                                y: calculateScrollView.contentSize.height
-                                - calculateScrollView.bounds.height)
-    
-    calculateScrollView.setContentOffset(bottomOffset, animated: true)
+else {
+    text = calculateOperator
+    + Symbol.blank
+    + NumberFormatter.convertToString(fromString: calculateOperand)
 }
 ```
 
-수정 후
-```swift
-private func scrollToBottom() {
-    let bottomOffset = CGPoint(x: 0,
-                                y: calculateScrollView.contentSize.height
-                                - calculateScrollView.bounds.height)
-    calculateScrollView.layoutIfNeeded() // 추가 됨
-    calculateScrollView.setContentOffset(bottomOffset, animated: true)
-}
-```
-
-### 2️⃣ NumberFormatter
-#### 문제점
-* 계산한 숫자를 그냥 출력하게 되면 Double타입을 String으로 출력하게 되어 3.0 이런 식으로 출력되게 됩니다. 따라서 이 숫자 출력을 어떻게 해야 좋을지 고민하였습니다.
-
-#### 해결법
-* swift의 NumberFormatter라는 클래스를 이용하여 숫자를 출력하여 비교적 알기 쉽게 출력하였습니다.
-```swift
-extension String {
-    func numberFormatting() -> String {
-        var stringArray = self.split(with: ".")
-        stringArray[0] = integerFormatting(stringArray[0])
-        if self.contains(".") {
-            if Double(stringArray[1]) == 0 {
-                stringArray.removeLast()
-            }
-        }
-        
-        return stringArray.joined(separator: ".")
-    }
+# 팀 회고👀
+## 잘한 점
+- MVC 디자인패턴을 사용함으로써 로직(Model)과 인터페이스 요소(View)를 분리시켜 각각 독립적으로 사용하고 효과적으로 로직을 재사용 하였습니다.
+- 서로의 코드를 설명하고 장단점을 파악하여 적절한 코드 병합을 하였습니다.
+- 팀원들이 사용해보지 않은 자료구조(Queue, Linkedlist)를 사용함으로써 팀원들의 자료구조의 이해를 높였습니다.
+- 다양한 방면으로 코드를 고민하고 여러 시도를 하였습니다.
     
-    func integerFormatting(_ input: String) -> String {
-        var numberFormatter: NumberFormatter {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            numberFormatter.maximumFractionDigits = 20
-            numberFormatter.roundingMode = .halfUp
-            
-            return numberFormatter
-        }
-        
-        let number = input.components(separatedBy: ",").joined()
-        guard let numberString = numberFormatter.string(for: Double(number)) else { return "" }
-        
-        return numberString
-    }
-}
-```
-    
-</details>
+## 보완하고 싶은 점
+- MVC 디자인패턴은 View와 Model 사이의 의존성이 높아지고 Controller가 비대해진다는 단점이 있는데 이것을 보완할 수 있는 MVVM 디자인패턴을 사용하면 더 의존성을 낮출 수 있으면 좋겠다고 생각했습니다. 
+- MVC 패턴, UML class Diagram에 대해 명확하지 않은 부분이 있어 부족한 부분에 대한 학습이 필요하다 생각했습니다.
 
-## 🔍 참고 링크
-* [Kodeco - Class Diagram](https://www.kodeco.com/books/design-patterns-by-tutorials/v3.0/chapters/2-how-to-read-a-class-diagram) 
-* [Receive messages from a UI object]()
-* [NumberFormatter](https://developer.apple.com/documentation/foundation/numberformatter)
-* [Swift Language Guide - Protocols](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html)
-* [Swift Language Guide - Extentions](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html)
+## 팀원 서로 칭찬하기
+
+### vetto, 리지 -> Andrew
+- 같이 고민하는 부분에 대해 자료를 찾아봐주고, 문제가 있는 부분도 적극적으로 해결하려고 한 점이 좋았습니다 👍
+- 자신의 의견을 충분히 어필하여, 팀원들이 더 다양한 생각을 할 수 있게 해주었습니다
+
+### 리지, Andrew -> vetto
+- 실행이 잘 되기 때문에 모르고 넘어갈 수도 있는 기능의 중복을 예리하게 찾아내어서 refactor 하는것에서 많은것을 배웠습니다.
+- 코드에 대해 잘 설명해주고 어려운 부분이 있을 때, 다른 캠퍼들에게 솔선수범으로 질문해서 문제를 해결하는데 적극적으로 한 부분이 좋았습니다 👍
+
+### Andrew, vetto -> 리지
+- 팀원들이 생각하지 못한 부분을 생각하여 코드가 비대해지는 것을 줄여줬습니다.
+- 현재의 코드에 만족하기보다는 좀 더 적합한 코드를 위해 자료를 찾고 적극적으로 변경을 시도하여서 코드를 더 깔끔하게 다듬어 주었습니다.
+
+
+---- 
+
+# 참고 링크
+- [Swift Language Guide - Protocols](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html)
+- [Swift Language Guide - Extentions](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html)
+- [Swift Language Guide - Error Handling](https://docs.swift.org/swift-book/LanguageGuide/ErrorHandling.html)
+- [Swift Language Guide - Closures](https://docs.swift.org/swift-book/LanguageGuide/Closures.html)
+- [Swift Language Guide - Advanced Operators](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html)
+- [Swift Language Guide - Inheritance](https://docs.swift.org/swift-book/LanguageGuide/Inheritance.html)
+- [Swift Language Guide - Subscripts](https://docs.swift.org/swift-book/LanguageGuide/Subscripts.html)
