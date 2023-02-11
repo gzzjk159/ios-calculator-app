@@ -13,7 +13,7 @@
 2. [프로젝트 구조](#프로젝트-구조)
 3. [실행화면](#실행화면) 
 4. [트러블 슈팅](#트러블-슈팅) 
-5. [회고👀](#회고)
+5. [팀 회고](#팀-회고)
 6. [참고 링크](#참고-링크)
 
 
@@ -38,6 +38,9 @@
 <br>
 <details>
     <summary><big>코드병합 정리</big></big></summary>
+
+<br/>
+
 **Model**
 > 파일별로 병합
 - CalculatorItemQueue (vetto)
@@ -51,6 +54,8 @@
     - 프로퍼티, 메서드 (Andrew), do-catch 구문 (리지)
 - Extension String (Andrew)
     - 고차함수 활용
+
+<br/>
 
 **ViewController**
 > 버튼의 기능에 따라 병합
@@ -147,6 +152,16 @@ struct LinkedList<Element: CalculateItem> {
 ### 해결법
 - `15.`를 입력하고 연산자를 입력했을 때 `.`은 사라지고 `15`만 스택뷰에 올라가도록 수정하였습니다.
 
+```swift
+static func convertToString(fromString: String) -> String {
+    let number = fromString.filter({ $0 != Character(Symbol.comma) })
+    guard let doubleInput = Double(number) else { return Symbol.empty }
+        
+    return convertToString(fromDouble: doubleInput)
+}
+```
+위에 코드에서 `"15."`이라는 문자열이 Double()함수에 들어가면 15.0으로 수정되어 나오게 하였습니다.
+
 ### 2. 숫자 20자리까지 표현
 - Double 타입으로 반환되는 조건에서 20자리까지 표현하는 것이 한계가 있었습니다. 저희는 숫자의 count로 접근하여 20과 같거나 작은 조건을 추가하여 자릿수를 맞추었습니다.
 
@@ -222,7 +237,7 @@ else {
 }
 ```
 
-# 팀 회고👀
+# 팀 회고
 ## 잘한 점
 - MVC 디자인패턴을 사용함으로써 로직(Model)과 인터페이스 요소(View)를 분리시켜 각각 독립적으로 사용하고 효과적으로 로직을 재사용 하였습니다.
 - 서로의 코드를 설명하고 장단점을 파악하여 적절한 코드 병합을 하였습니다.
@@ -246,7 +261,6 @@ else {
 ### Andrew, vetto -> 리지
 - 팀원들이 생각하지 못한 부분을 생각하여 코드가 비대해지는 것을 줄여줬습니다.
 - 현재의 코드에 만족하기보다는 좀 더 적합한 코드를 위해 자료를 찾고 적극적으로 변경을 시도하여서 코드를 더 깔끔하게 다듬어 주었습니다.
-
 
 ---- 
 
